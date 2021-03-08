@@ -1,3 +1,6 @@
 <resources>
     <string name="app_name">Music Player</string>
+    <string name="nav_home_text">Home</string>
+    <string name="nav_lib_text">Your Library</string>
+    <string name="nav_search_text">Search</string>
 </resources>
