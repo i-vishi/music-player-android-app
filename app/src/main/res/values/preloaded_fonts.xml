@@ -3,6 +3,8 @@
     <array name="preloaded_fonts" translatable="false">
         <item>@font/cinzel</item>
         <item>@font/maven_pro</item>
+        <item>@font/open_sans</item>
+        <item>@font/roboto</item>
         <item>@font/ubuntu</item>
     </array>
 </resources>

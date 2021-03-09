@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "682469237643",
+    "project_id": "music-player-bc50a",
+    "storage_bucket": "music-player-bc50a.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:682469237643:android:77bfb311d808034edcc58e",
+        "android_client_info": {
+          "package_name": "com.vishalgaur.musicplayer"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "682469237643-7hsdlis38ep8clka3fu395q6qoivlrdb.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBxP0Dm9Pbieu668rRhWwDh04ANx2L0MI8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "682469237643-7hsdlis38ep8clka3fu395q6qoivlrdb.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

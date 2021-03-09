@@ -3,4 +3,9 @@
     <string name="nav_home_text">Home</string>
     <string name="nav_lib_text">Your Library</string>
     <string name="nav_search_text">Search</string>
+
+    <string name="title_songs">Songs</string>
+    <string name="song_card_desc">Song Image</string>
+    <string name="song_card_name">Song Name</string>
+    <string name="song_card_artists">Artist 1, Artist 2</string>
 </resources>
