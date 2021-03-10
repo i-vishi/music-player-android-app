@@ -22,8 +22,8 @@ class HomeViewModel : ViewModel() {
     private val _songs = MutableLiveData<List<Song>>()
     val songs: LiveData<List<Song>> get() = _songs
 
-    private val _navigateToSelectedSong = MutableLiveData<Long>()
-    val navigateToSelectedSong: LiveData<Long> get() = _navigateToSelectedSong
+    private val _navigateToSelectedSong = MutableLiveData<Long?>()
+    val navigateToSelectedSong: LiveData<Long?> get() = _navigateToSelectedSong
 
 
     init {
@@ -52,5 +52,13 @@ class HomeViewModel : ViewModel() {
                 Log.e(TAG, "Error getting Data", e)
             }
         }
+    }
+
+    fun displaySelectedSong(songId: Long) {
+        _navigateToSelectedSong.value = songId
+    }
+
+    fun displaySelectedSongComplete() {
+        _navigateToSelectedSong.value = null
     }
 }
