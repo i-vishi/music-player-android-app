@@ -9,13 +9,15 @@ import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.findNavController
 import com.vishalgaur.musicplayer.R
 import com.vishalgaur.musicplayer.databinding.FragmentHomeBinding
+import com.vishalgaur.musicplayer.network.Song
 
 class HomeFragment : Fragment() {
     private lateinit var binding: FragmentHomeBinding
 
-    class HomeViewModelFactory() : ViewModelProvider.Factory {
+    class HomeViewModelFactory : ViewModelProvider.Factory {
         @Suppress("UNCHECKED_CAST")
         override fun <T : ViewModel?> create(modelClass: Class<T>): T {
             if (modelClass.isAssignableFrom(HomeViewModel::class.java)) {
@@ -37,7 +39,15 @@ class HomeFragment : Fragment() {
         binding.lifecycleOwner = this
         binding.viewModel = viewModel
 
-        binding.songRecyclerView.adapter = SongItemAdapter()
+        val adapter = SongItemAdapter()
+
+        adapter.onClickListener = object : SongItemAdapter.OnClickListener {
+            override fun onClick(songData: Song) {
+                findNavController().navigate(HomeFragmentDirections.actionPlaySong(songData.songId))
+            }
+        }
+
+        binding.songRecyclerView.adapter = adapter
 
         return binding.root
     }

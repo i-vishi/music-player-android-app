@@ -9,5 +9,18 @@
         android:id="@+id/homeFragment"
         android:name="com.vishalgaur.musicplayer.home.HomeFragment"
         android:label="fragment_home"
-        tools:layout="@layout/fragment_home" />
+        tools:layout="@layout/fragment_home" >
+        <action
+            android:id="@+id/actionPlaySong"
+            app:destination="@id/playerFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/playerFragment"
+        android:name="com.vishalgaur.musicplayer.player.PlayerFragment"
+        android:label="fragment_player"
+        tools:layout="@layout/fragment_player" >
+        <argument
+            android:name="songId"
+            app:argType="long" />
+    </fragment>
 </navigation>
