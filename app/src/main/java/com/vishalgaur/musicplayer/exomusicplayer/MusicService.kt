@@ -13,6 +13,7 @@ import com.google.android.exoplayer2.SimpleExoPlayer
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory
 import com.google.android.exoplayer2.ext.mediasession.MediaSessionConnector
 import com.google.android.exoplayer2.ext.mediasession.TimelineQueueNavigator
+import com.vishalgaur.musicplayer.network.NETWORK_ERROR
 import kotlinx.coroutines.*
 
 private const val TAG = "MusicService"
@@ -78,34 +79,35 @@ class MusicService : MediaBrowserServiceCompat() {
     }
 
     override fun onGetRoot(
-		clientPackageName: String,
-		clientUid: Int,
-		rootHints: Bundle?
-	): BrowserRoot {
+        clientPackageName: String,
+        clientUid: Int,
+        rootHints: Bundle?
+    ): BrowserRoot {
         return BrowserRoot(MEDIA_ROOT_ID, null)
     }
 
     override fun onLoadChildren(
-		parentId: String,
-		result: Result<MutableList<MediaBrowserCompat.MediaItem>>
-	) {
+        parentId: String,
+        result: Result<MutableList<MediaBrowserCompat.MediaItem>>
+    ) {
         when (parentId) {
-			MEDIA_ROOT_ID -> {
-				val resultsSent = musicSource.whenReady { isInitialized ->
-					if (isInitialized) {
-						result.sendResult(musicSource.asMediaItems())
-						if (!isPlayerInitialized && musicSource.songs.isNotEmpty()) {
-							preparePlayer(musicSource.songs, musicSource.songs[0], false)
-							isPlayerInitialized = true
-						}
-					} else {
-						result.sendResult(null)
-					}
-				}
-				if (!resultsSent) {
-					result.detach()
-				}
-			}
+            MEDIA_ROOT_ID -> {
+                val resultsSent = musicSource.whenReady { isInitialized ->
+                    if (isInitialized) {
+                        result.sendResult(musicSource.asMediaItems())
+                        if (!isPlayerInitialized && musicSource.songs.isNotEmpty()) {
+                            preparePlayer(musicSource.songs, musicSource.songs[0], false)
+                            isPlayerInitialized = true
+                        }
+                    } else {
+                        mediaSession.sendSessionEvent(NETWORK_ERROR, null)
+                        result.sendResult(null)
+                    }
+                }
+                if (!resultsSent) {
+                    result.detach()
+                }
+            }
         }
     }
 
@@ -130,10 +132,10 @@ class MusicService : MediaBrowserServiceCompat() {
     }
 
     private fun preparePlayer(
-		songs: List<MediaMetadataCompat>,
-		itemToBePlayed: MediaMetadataCompat?,
-		playNow: Boolean
-	) {
+        songs: List<MediaMetadataCompat>,
+        itemToBePlayed: MediaMetadataCompat?,
+        playNow: Boolean
+    ) {
         val currSongIndex = if (currentPlayingSong == null) 0 else songs.indexOf(itemToBePlayed)
 //		exoPlayer.prepare(musicSource.asMediaSource(defaultDataSourceFactory))        // deprecated    use setMediaSource and prepare() instead
         exoPlayer.setMediaSource(musicSource.asMediaSource(defaultDataSourceFactory))
