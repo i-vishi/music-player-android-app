@@ -56,4 +56,6 @@ class PlayerViewModel(songId: Long) : ViewModel() {
     val getArtists = Transformations.map(songData) {
         it?.artist?.joinToString { name -> name }
     }
+
+    val getSongUrl = songData.value?.url
 }

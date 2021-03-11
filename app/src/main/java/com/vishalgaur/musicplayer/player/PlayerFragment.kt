@@ -1,5 +1,8 @@
 package com.vishalgaur.musicplayer.player
 
+import android.media.AudioAttributes
+import android.media.MediaPlayer
+import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -48,7 +51,29 @@ class PlayerFragment : Fragment() {
 
         val viewModelFactory = PlayerViewModelFactory(songId)
         binding.viewModel = ViewModelProvider(this, viewModelFactory).get(PlayerViewModel::class.java)
+
+        binding.playerPlayButton.setOnClickListener {
+            playSong()
+        }
         Log.d(TAG, "onViewCreated ends")
+    }
+
+
+    private fun playSong() {
+        val myUrl = binding.viewModel?.getSongUrl
+//        val mediaPlayer = MediaPlayer().apply {
+//            setAudioAttributes(
+//                AudioAttributes.Builder()
+//                    .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
+//                    .setUsage(AudioAttributes.USAGE_MEDIA)
+//                    .build()
+//            )
+//            setDataSource(myUrl)
+//            prepare()
+//            start()
+//        }
+//        mediaPlayer.release()
+        Log.d(TAG, "url is: $myUrl")
     }
 
 }

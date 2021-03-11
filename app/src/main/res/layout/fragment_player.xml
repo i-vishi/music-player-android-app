@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <data>
 
@@ -8,9 +10,7 @@
             type="com.vishalgaur.musicplayer.player.PlayerViewModel" />
     </data>
 
-    <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        xmlns:tools="http://schemas.android.com/tools"
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/black_900"
@@ -19,7 +19,7 @@
         <ImageView
             android:id="@+id/player_image_view"
             android:layout_width="match_parent"
-            android:layout_height="400dp"
+            android:layout_height="350dp"
             android:layout_margin="32dp"
             android:background="@color/white"
             android:contentDescription="@string/song_card_desc"
@@ -33,6 +33,7 @@
             android:layout_height="wrap_content"
             android:layout_margin="32dp"
             android:text="@{viewModel.songData.title}"
+            android:textAlignment="center"
             android:textAppearance="@style/TextAppearance.MdcTypographyStyles.Body1"
             android:textColor="@color/white"
             android:textSize="24sp"
@@ -49,6 +50,7 @@
             android:layout_marginTop="8dp"
             android:layout_marginEnd="32dp"
             android:text="@{viewModel.getArtists}"
+            android:textAlignment="center"
             android:textAppearance="@style/TextAppearance.MdcTypographyStyles.Caption"
             android:textColor="@color/white"
             android:textSize="14sp"
@@ -57,38 +59,58 @@
             app:layout_constraintTop_toBottomOf="@+id/player_song_name_view"
             tools:text="@string/player_artists" />
 
+        <com.google.android.material.slider.Slider
+            android:id="@+id/player_time_slider"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="32dp"
+            android:layout_marginTop="32dp"
+            android:layout_marginEnd="32dp"
+            android:value="20.0"
+            android:valueFrom="0.0"
+            android:valueTo="100.0"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/player_artists_view"
+            app:thumbColor="@color/green"
+            app:thumbRadius="7dp"
+            app:trackColorActive="?attr/colorSecondary"
+            app:trackColorInactive="@color/white" />
+
         <ImageButton
             android:id="@+id/player_play_button"
             android:layout_width="72dp"
             android:layout_height="72dp"
-            android:layout_margin="32dp"
+            android:layout_marginBottom="48dp"
             android:contentDescription="@string/play_button_desc"
             android:src="@drawable/ic_play_arrow_24"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/player_artists_view" />
+            app:layout_constraintTop_toBottomOf="@+id/player_time_slider" />
 
         <ImageButton
             android:id="@+id/player_prev_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="48dp"
             android:contentDescription="@string/skip_prev_btn_desc"
             android:src="@drawable/ic_skip_previous_24"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/player_play_button"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/player_artists_view" />
+            app:layout_constraintTop_toBottomOf="@+id/player_time_slider" />
 
         <ImageButton
             android:id="@+id/player_next_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="48dp"
             android:contentDescription="@string/skip_next_btn_desc"
-            android:src="@drawable/ic_skip_previous_24"
+            android:src="@drawable/ic_skip_next_24"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/player_play_button"
-            app:layout_constraintTop_toBottomOf="@+id/player_artists_view" />
+            app:layout_constraintTop_toBottomOf="@+id/player_time_slider" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

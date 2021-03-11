@@ -65,6 +65,11 @@ dependencies {
 
     implementation 'androidx.lifecycle:lifecycle-livedata-ktx:2.3.0'
 
+    //exoplayer
+    implementation 'com.google.android.exoplayer:exoplayer:2.13.2'
+    implementation 'com.google.android.exoplayer:extension-mediasession:2.11.5'
+
+
     //firebase
     implementation platform('com.google.firebase:firebase-bom:26.6.0')
     implementation 'com.google.firebase:firebase-analytics-ktx'
