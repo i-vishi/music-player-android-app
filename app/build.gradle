@@ -5,6 +5,7 @@ plugins {
     id "androidx.navigation.safeargs.kotlin"
     id 'com.google.gms.google-services'
     id 'kotlin-parcelize'
+    id 'dagger.hilt.android.plugin'
 }
 
 android {
@@ -66,8 +67,13 @@ dependencies {
     implementation 'androidx.lifecycle:lifecycle-livedata-ktx:2.3.0'
 
     //exoplayer
-    implementation 'com.google.android.exoplayer:exoplayer:2.13.2'
+    implementation 'com.google.android.exoplayer:exoplayer-core:2.13.2'
+    implementation 'com.google.android.exoplayer:exoplayer-ui:2.13.2'
     implementation 'com.google.android.exoplayer:extension-mediasession:2.11.5'
+
+    //dagger hilt
+    implementation "com.google.dagger:hilt-android:$hilt_version"
+    kapt "com.google.dagger:hilt-compiler:$hilt_version"
 
 
     //firebase

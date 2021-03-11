@@ -13,11 +13,13 @@ import com.google.android.exoplayer2.SimpleExoPlayer
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory
 import com.google.android.exoplayer2.ext.mediasession.MediaSessionConnector
 import com.google.android.exoplayer2.ext.mediasession.TimelineQueueNavigator
+import com.vishalgaur.musicplayer.network.MEDIA_ROOT_ID
 import com.vishalgaur.musicplayer.network.NETWORK_ERROR
+import com.vishalgaur.musicplayer.network.SongDatabase
 import kotlinx.coroutines.*
 
 private const val TAG = "MusicService"
-private const val MEDIA_ROOT_ID = "root_id"
+
 
 class MusicService : MediaBrowserServiceCompat() {
 
@@ -44,8 +46,14 @@ class MusicService : MediaBrowserServiceCompat() {
     override fun onCreate() {
         super.onCreate()
 
+//
+        musicSource = MusicSource(SongDatabase())
+//
+
+
+
         serviceScope.launch {
-            musicSource.fetchMediaData()
+         musicSource.fetchMediaData()
         }
 
         val activityIntent = packageManager.getLaunchIntentForPackage(packageName).let {
