@@ -80,7 +80,7 @@ class MusicSource(private val songDatabase: SongDatabase) {
         return concatenatingMediaSource
     }
 
-    fun asMediaItem() = songs.map { song ->
+    fun asMediaItems() = songs.map { song ->
         val description = MediaDescriptionCompat.Builder()
             .setMediaUri(song.getString(METADATA_KEY_MEDIA_URI).toUri())
             .setTitle(song.description.title)
@@ -89,5 +89,5 @@ class MusicSource(private val songDatabase: SongDatabase) {
             .setIconUri(song.description.iconUri)
             .build()
         MediaBrowserCompat.MediaItem(description, FLAG_PLAYABLE)
-    }
+    }.toMutableList()
 }
