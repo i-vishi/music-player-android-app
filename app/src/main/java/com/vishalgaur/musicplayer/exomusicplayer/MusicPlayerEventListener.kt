@@ -7,26 +7,15 @@ import com.google.android.exoplayer2.Player
 class MusicPlayerEventListener(
     private val musicService: MusicService
 ) : Player.EventListener {
-    override fun onPlayWhenReadyChanged(playWhenReady: Boolean, reason: Int) {
-        super.onPlayWhenReadyChanged(playWhenReady, reason)
-        if (reason == Player.STATE_READY && !playWhenReady) {
-            musicService.stopForeground(false)
-        }
-    }
-
-    override fun onPlaybackStateChanged(state: Int) {
-        super.onPlaybackStateChanged(state)
-        if (state == Player.STATE_READY) {
+    override fun onPlayerStateChanged(playWhenReady: Boolean, playbackState: Int) {
+        super.onPlayerStateChanged(playWhenReady, playbackState)
+        if(playbackState == Player.STATE_READY && !playWhenReady) {
             musicService.stopForeground(false)
         }
     }
 
     override fun onPlayerError(error: ExoPlaybackException) {
         super.onPlayerError(error)
-        Toast.makeText(
-            musicService,
-            "An error occured, check network connection",
-            Toast.LENGTH_LONG
-        ).show()
+        Toast.makeText(musicService, "An unknown error occured", Toast.LENGTH_LONG).show()
     }
 }

@@ -13,4 +13,6 @@
     <string name="skip_next_btn_desc">Skip to next song</string>
     <string name="player_song_name">Some Song Name</string>
     <string name="player_artists">Artist 1, Artist 2, Artist 3</string>
+    <string name="notification_channel_name">Music Channel</string>
+    <string name="notification_channel_description">Shows the currently playing music</string>
 </resources>

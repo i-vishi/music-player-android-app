@@ -5,7 +5,7 @@ import kotlinx.parcelize.Parcelize
 import java.util.ArrayList
 
 data class Song(
-    val songId: Long = 0,
+    val songId: String = "",
     val url: String = "",
     val title: String = "",
     val banner: String = "",
