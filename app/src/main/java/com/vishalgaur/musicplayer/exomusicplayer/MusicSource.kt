@@ -5,19 +5,20 @@ import android.support.v4.media.MediaBrowserCompat.MediaItem.FLAG_PLAYABLE
 import android.support.v4.media.MediaDescriptionCompat
 import android.support.v4.media.MediaMetadataCompat
 import android.support.v4.media.MediaMetadataCompat.*
+import android.util.Log
 import androidx.core.net.toUri
-import com.google.android.exoplayer2.MediaItem
 import com.google.android.exoplayer2.source.ConcatenatingMediaSource
 import com.google.android.exoplayer2.source.ProgressiveMediaSource
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory
 import com.vishalgaur.musicplayer.network.SongDatabase
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import javax.inject.Inject
 
 
 enum class FirebaseStatus { CREATED, INITIALIZING, INITIALIZED, ERROR }
 
-class MusicSource(private val songDatabase: SongDatabase) {
+class MusicSource @Inject constructor(private val songDatabase: SongDatabase) {
 
     var songs = emptyList<MediaMetadataCompat>()
 
@@ -40,12 +41,13 @@ class MusicSource(private val songDatabase: SongDatabase) {
     suspend fun fetchMediaData() = withContext(Dispatchers.IO) {
         status = FirebaseStatus.INITIALIZING
         val allSongs = songDatabase.getSongs()
+        Log.d("TAGTAGTAGTAGTAG", allSongs.toString())
         songs = allSongs.map { song ->
             Builder()
                 .putString(METADATA_KEY_ARTIST, song.artist.joinToString { name -> name })
                 .putString(METADATA_KEY_TITLE, song.title)
                 .putString(METADATA_KEY_DISPLAY_TITLE, song.title)
-                .putString(METADATA_KEY_MEDIA_ID, song.songId.toString())
+                .putString(METADATA_KEY_MEDIA_ID, song.songId)
                 .putString(METADATA_KEY_MEDIA_URI, song.url)
                 .putString(METADATA_KEY_ALBUM_ART_URI, song.banner)
                 .putString(METADATA_KEY_DISPLAY_ICON_URI, song.banner)
@@ -71,10 +73,10 @@ class MusicSource(private val songDatabase: SongDatabase) {
     fun asMediaSource(dataSourceFactory: DefaultDataSourceFactory): ConcatenatingMediaSource {
         val concatenatingMediaSource = ConcatenatingMediaSource()
         songs.forEach { song ->
-            val mediaItem = MediaItem.fromUri(song.getString(METADATA_KEY_MEDIA_URI).toUri())
+//            val mediaItem = MediaItem.fromUri(song.getString(METADATA_KEY_MEDIA_URI).toUri())
             val mediaSource = ProgressiveMediaSource.Factory(dataSourceFactory)
-//                .createMediaSource(song.getString(METADATA_KEY_MEDIA_URI).toUri())  // deprecated use createMediaSource(mediaItem) instead
-                .createMediaSource(mediaItem)
+                .createMediaSource(song.getString(METADATA_KEY_MEDIA_URI).toUri())  // deprecated use createMediaSource(mediaItem) instead
+//                .createMediaSource(mediaItem)
             concatenatingMediaSource.addMediaSource(mediaSource)
         }
         return concatenatingMediaSource

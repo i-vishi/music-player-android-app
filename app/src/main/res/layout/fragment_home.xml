@@ -6,7 +6,7 @@
     <data>
         <variable
             name="viewModel"
-            type="com.vishalgaur.musicplayer.home.HomeViewModel" />
+            type="com.vishalgaur.musicplayer.MainViewModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -47,7 +47,6 @@
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toBottomOf="@id/title_songs"
             app:layout_constraintVertical_bias="0.0"
-            app:listData="@{viewModel.songs}"
             tools:itemCount="16"
             tools:listitem="@layout/song_list_item" />
 

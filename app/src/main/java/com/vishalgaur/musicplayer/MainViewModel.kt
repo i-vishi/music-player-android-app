@@ -10,6 +10,8 @@ import com.vishalgaur.musicplayer.exomusicplayer.MusicServiceConnection
 import com.vishalgaur.musicplayer.network.MEDIA_ROOT_ID
 import com.vishalgaur.musicplayer.network.Resource
 import com.vishalgaur.musicplayer.network.Song
+import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 
 
 //extending PlaybackStateCompat to merge states inline
@@ -28,8 +30,8 @@ inline val PlaybackStateCompat.isPlayEnabled
             (actions and PlaybackStateCompat.ACTION_PLAY_PAUSE != 0L &&
                     state == PlaybackStateCompat.STATE_PAUSED)
 
-
-class MainViewModel(private val musicServiceConnection: MusicServiceConnection) : ViewModel() {
+@HiltViewModel
+class MainViewModel @Inject constructor (private val musicServiceConnection: MusicServiceConnection) : ViewModel() {
 
     private val _mediaItems = MutableLiveData<Resource<List<Song>>>()
     val mediaItems: LiveData<Resource<List<Song>>> get() = _mediaItems
@@ -51,11 +53,11 @@ class MainViewModel(private val musicServiceConnection: MusicServiceConnection) 
                     super.onChildrenLoaded(parentId, children)
                     val items = children.map { mediaItem ->
                         Song(
-                            mediaItem.mediaId!!.toLong(),
-                            mediaItem.description.mediaUri!!.toString(),
-                            mediaItem.description.title!!.toString(),
-                            mediaItem.description.iconUri!!.toString(),
-                            ArrayList(mediaItem.description.subtitle!!.split(",").map { it.trim() })
+                            mediaItem.mediaId!!,
+                            mediaItem.description.mediaUri.toString(),
+                            mediaItem.description.title.toString(),
+                            mediaItem.description.iconUri.toString(),
+                            ArrayList(mediaItem.description.subtitle?.split(",")?.map { it.trim() })
                         )
                     }
                     _mediaItems.value = Resource.success(items)
@@ -77,7 +79,7 @@ class MainViewModel(private val musicServiceConnection: MusicServiceConnection) 
 
     fun playOrPauseSong(mediaItem: Song, toggle: Boolean = false) {
         val isPrepared = playbackState.value?.isPrepared ?: false
-        if (isPrepared && mediaItem.songId.toString() == currPlayingSong.value?.getString(
+        if (isPrepared && mediaItem.songId== currPlayingSong.value?.getString(
                 METADATA_KEY_MEDIA_ID
             )
         ) {
@@ -90,7 +92,7 @@ class MainViewModel(private val musicServiceConnection: MusicServiceConnection) 
             }
         } else {
             musicServiceConnection.transportControls.playFromMediaId(
-                mediaItem.songId.toString(),
+                mediaItem.songId,
                 null
             )
         }
