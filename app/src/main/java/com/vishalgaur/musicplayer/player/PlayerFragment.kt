@@ -117,18 +117,19 @@ class PlayerFragment : Fragment() {
     }
 
     private fun subscribeToObservers() {
-        mainViewModel.mediaItems.observe(viewLifecycleOwner) { result ->
-            when (result.status) {
-                Status.SUCCESS -> {
-                    result.data?.let { songs ->
-                        if (currPlayingSong == null && songs.isNotEmpty()) {
-                            Log.d(TAG, "check check check")
-                            currPlayingSong = songs[0]
-                            updatePlayerData(songs[0])
+        mainViewModel.mediaItems.observe(viewLifecycleOwner) {
+            it?.let { result ->
+                when (result.status) {
+                    Status.SUCCESS -> {
+                        result.data?.let { songs ->
+                            if (currPlayingSong == null && songs.isNotEmpty()) {
+                                currPlayingSong = songs[0]
+                                updatePlayerData(songs[0])
+                            }
                         }
                     }
+                    else -> Unit
                 }
-                else -> Unit
             }
         }
 
@@ -155,7 +156,6 @@ class PlayerFragment : Fragment() {
         }
 
         playerViewModel.currSongDuration.observe(viewLifecycleOwner) {
-            Log.d(TAG, "ms: $it")
             binding.playerTimeSlider.valueTo = it.toFloat()
             val formattedTime = getMinSec(it)
             binding.totalTimeTextView.text = formattedTime

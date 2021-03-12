@@ -96,11 +96,12 @@
             app:layout_constraintTop_toBottomOf="@+id/player_time_slider"
             tools:text="05:00" />
 
-        <ImageButton
+        <ImageView
             android:id="@+id/player_play_button"
             android:layout_width="72dp"
             android:layout_height="72dp"
             android:layout_marginBottom="48dp"
+            android:background="@color/green"
             android:contentDescription="@string/play_button_desc"
             android:src="@drawable/ic_play_arrow_48"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -113,6 +114,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="48dp"
+            android:background="@color/green"
             android:contentDescription="@string/skip_prev_btn_desc"
             android:scaleType="fitCenter"
             android:src="@drawable/ic_skip_previous_24"
@@ -126,6 +128,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="48dp"
+            android:background="@color/green"
             android:contentDescription="@string/skip_next_btn_desc"
             android:scaleType="fitCenter"
             android:src="@drawable/ic_skip_next_24"

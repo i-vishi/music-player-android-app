@@ -12,9 +12,9 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 
 
-
 @HiltViewModel
-class MainViewModel @Inject constructor (private val musicServiceConnection: MusicServiceConnection) : ViewModel() {
+class MainViewModel @Inject constructor(private val musicServiceConnection: MusicServiceConnection) :
+    ViewModel() {
 
     private val _mediaItems = MutableLiveData<Resource<List<Song>>>()
     val mediaItems: LiveData<Resource<List<Song>>> get() = _mediaItems
@@ -62,10 +62,7 @@ class MainViewModel @Inject constructor (private val musicServiceConnection: Mus
 
     fun playOrPauseSong(mediaItem: Song, toggle: Boolean = false) {
         val isPrepared = playbackState.value?.isPrepared ?: false
-        if (isPrepared && mediaItem.songId== currPlayingSong.value?.getString(
-                METADATA_KEY_MEDIA_ID
-            )
-        ) {
+        if (isPrepared && mediaItem.songId == currPlayingSong.value?.getString(METADATA_KEY_MEDIA_ID)) {
             playbackState.value?.let { playbackState ->
                 when {
                     playbackState.isPlaying -> if (toggle) musicServiceConnection.transportControls.pause()

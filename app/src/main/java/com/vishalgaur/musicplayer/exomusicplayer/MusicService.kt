@@ -41,8 +41,8 @@ class MusicService : MediaBrowserServiceCompat() {
     private lateinit var mediaSessionConnector: MediaSessionConnector
     private lateinit var musicPlayerEventListener: MusicPlayerEventListener
 
-	var isForegroundService = false
-	private lateinit var musicNotificationManager: MusicNotificationManager
+    var isForegroundService = false
+    private lateinit var musicNotificationManager: MusicNotificationManager
 
     private var isPlayerInitialized = false
 
@@ -57,7 +57,7 @@ class MusicService : MediaBrowserServiceCompat() {
         super.onCreate()
 
         serviceScope.launch {
-         musicSource.fetchMediaData()
+            musicSource.fetchMediaData()
         }
 
         val activityIntent = packageManager?.getLaunchIntentForPackage(packageName)?.let {
@@ -76,8 +76,9 @@ class MusicService : MediaBrowserServiceCompat() {
             mediaSession.sessionToken,
             MusicNotificationListener(this)
         ) {
-            Log.d("TAGTAGTAG", "duration: ${exoPlayer.duration}")
-            currSongDuration = exoPlayer.duration
+
+            // exoplayer returns negative value sometimes =====> added static duration to handle it
+            currSongDuration = if (exoPlayer.duration > 0) exoPlayer.duration else 1001
         }
 
 
@@ -159,7 +160,7 @@ class MusicService : MediaBrowserServiceCompat() {
         playNow: Boolean
     ) {
         val currSongIndex = if (currentPlayingSong == null) 0 else songs.indexOf(itemToBePlayed)
-		exoPlayer.prepare(musicSource.asMediaSource(defaultDataSourceFactory))        // deprecated    use setMediaSource and prepare() instead
+        exoPlayer.prepare(musicSource.asMediaSource(defaultDataSourceFactory))        // deprecated    use setMediaSource and prepare() instead
 //        exoPlayer.setMediaSource(musicSource.asMediaSource(defaultDataSourceFactory))
 //        exoPlayer.prepare()
         exoPlayer.seekTo(currSongIndex, 0L)
