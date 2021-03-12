@@ -7,28 +7,11 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.vishalgaur.musicplayer.exomusicplayer.MusicServiceConnection
-import com.vishalgaur.musicplayer.network.MEDIA_ROOT_ID
-import com.vishalgaur.musicplayer.network.Resource
-import com.vishalgaur.musicplayer.network.Song
+import com.vishalgaur.musicplayer.network.*
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 
 
-//extending PlaybackStateCompat to merge states inline
-inline val PlaybackStateCompat.isPrepared
-    get() = state == PlaybackStateCompat.STATE_BUFFERING ||
-            state == PlaybackStateCompat.STATE_PLAYING ||
-            state == PlaybackStateCompat.STATE_PAUSED
-
-inline val PlaybackStateCompat.isPlaying
-    get() = state == PlaybackStateCompat.STATE_BUFFERING ||
-            state == PlaybackStateCompat.STATE_PLAYING ||
-            state == PlaybackStateCompat.STATE_PAUSED
-
-inline val PlaybackStateCompat.isPlayEnabled
-    get() = actions and PlaybackStateCompat.ACTION_PLAY != 0L ||
-            (actions and PlaybackStateCompat.ACTION_PLAY_PAUSE != 0L &&
-                    state == PlaybackStateCompat.STATE_PAUSED)
 
 @HiltViewModel
 class MainViewModel @Inject constructor (private val musicServiceConnection: MusicServiceConnection) : ViewModel() {

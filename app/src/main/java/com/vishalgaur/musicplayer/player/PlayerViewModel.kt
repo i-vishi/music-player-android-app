@@ -1,61 +1,42 @@
 package com.vishalgaur.musicplayer.player
 
-import android.util.Log
 import androidx.lifecycle.*
-import com.vishalgaur.musicplayer.home.SongsApiStatus
-import com.vishalgaur.musicplayer.network.Song
-import com.vishalgaur.musicplayer.network.SongDatabase
+import com.vishalgaur.musicplayer.exomusicplayer.MusicService
+import com.vishalgaur.musicplayer.exomusicplayer.MusicServiceConnection
+import com.vishalgaur.musicplayer.network.currentPlaybackPosition
+import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import java.lang.Exception
-
+import javax.inject.Inject
 
 private const val TAG = "PlayerViewModel"
 
-class PlayerViewModel(songId: Long) : ViewModel() {
+@HiltViewModel
+class PlayerViewModel @Inject constructor(private val musicServiceConnection: MusicServiceConnection) :
+    ViewModel() {
 
-    private val _selectedSongId = MutableLiveData<Long>()
-    val selectedSongId: LiveData<Long> get() = _selectedSongId
+    private val playbackState = musicServiceConnection.playbackState
 
-    private val _status = MutableLiveData<SongsApiStatus>()
-    val status: LiveData<SongsApiStatus> get() = _status
+    private val _currSongDuration = MutableLiveData<Long>()
+    val currSongDuration: LiveData<Long> get() = _currSongDuration
 
-    private val _songData = MutableLiveData<Song?>()
-    val songData: LiveData<Song?> get() = _songData
+    private val _currPlayerPosition = MutableLiveData<Long>()
+    val currPlayerPosition: LiveData<Long> get() = _currPlayerPosition
 
     init {
-        _selectedSongId.value = songId
-        getSongData()
+        updatePlayerPosition()
     }
 
-    private fun getSongData() {
+    private fun updatePlayerPosition() {
         viewModelScope.launch {
-            _status.value = SongsApiStatus.LOADING
-            Log.d(TAG, "getting song data with id ${selectedSongId.value}")
-            SongDatabase().collectionSongs.whereEqualTo("songId", selectedSongId.value).get()
-                .addOnSuccessListener { result ->
-                    try {
-                        for (document in result) {
-                            Log.d(TAG, "${document.id} => ${document.data}")
-                            _songData.value = document.toObject(Song::class.java)
-
-                        }
-                        _status.value = SongsApiStatus.DONE
-                    } catch (err: Exception) {
-                        Log.e(TAG, err.toString())
-                        _songData.value = null
-                    }
-
-                }.addOnFailureListener { e ->
-                    _status.value = SongsApiStatus.ERROR
-                    _songData.value = null
-                    Log.e(TAG, "Error getting Data", e)
+            while (true) {
+                val position = playbackState.value?.currentPlaybackPosition
+                if (currPlayerPosition.value != position) {
+                    _currPlayerPosition.value = position!!
+                    _currSongDuration.value = MusicService.currSongDuration
                 }
+                delay(100L)
+            }
         }
     }
-
-    val getArtists = Transformations.map(songData) {
-        it?.artist?.joinToString { name -> name }
-    }
-
-    val getSongUrl = songData.value?.url
 }

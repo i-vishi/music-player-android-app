@@ -4,30 +4,59 @@ import android.media.AudioAttributes
 import android.media.MediaPlayer
 import android.net.Uri
 import android.os.Bundle
+import android.support.v4.media.session.PlaybackStateCompat
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import com.bumptech.glide.Glide
+import com.bumptech.glide.RequestManager
+import com.google.android.material.slider.Slider
+import com.vishalgaur.musicplayer.MainViewModel
+import com.vishalgaur.musicplayer.R
 import com.vishalgaur.musicplayer.databinding.FragmentPlayerBinding
+import com.vishalgaur.musicplayer.network.Song
+import com.vishalgaur.musicplayer.network.Status
+import com.vishalgaur.musicplayer.network.isPlaying
+import com.vishalgaur.musicplayer.network.toSong
+import dagger.hilt.android.AndroidEntryPoint
+import java.text.SimpleDateFormat
+import java.util.*
+import javax.inject.Inject
 
 private const val TAG = "PlayerFragment"
 
+@AndroidEntryPoint
 class PlayerFragment : Fragment() {
+
+    @Inject
+    lateinit var glide: RequestManager
 
     private lateinit var binding: FragmentPlayerBinding
 
-    class PlayerViewModelFactory(private val songId: Long) : ViewModelProvider.Factory {
-        @Suppress("UNCHECKED_CAST")
-        override fun <T : ViewModel?> create(modelClass: Class<T>): T {
-            if (modelClass.isAssignableFrom(PlayerViewModel::class.java)) {
-                return PlayerViewModel(songId) as T
-            }
-            throw IllegalArgumentException("Unknown ViewModel class")
-        }
-    }
+    private lateinit var mainViewModel: MainViewModel
+
+    private val playerViewModel: PlayerViewModel by viewModels()
+
+    private var currPlayingSong: Song? = null
+
+    private var playbackState: PlaybackStateCompat? = null
+
+    private var updateSlider = true
+
+//    class PlayerViewModelFactory(private val songId: String) : ViewModelProvider.Factory {
+//        @Suppress("UNCHECKED_CAST")
+//        override fun <T : ViewModel?> create(modelClass: Class<T>): T {
+//            if (modelClass.isAssignableFrom(PlayerViewModel::class.java)) {
+//                return PlayerViewModel(songId) as T
+//            }
+//            throw IllegalArgumentException("Unknown ViewModel class")
+//        }
+//    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -45,35 +74,109 @@ class PlayerFragment : Fragment() {
         Log.d(TAG, "onViewCreated Starts")
         super.onViewCreated(view, savedInstanceState)
 
-        val songId = PlayerFragmentArgs.fromBundle(requireArguments()).songId
+        binding.viewModel = playerViewModel
 
-        Log.d(TAG, "SONG ID: $songId")
+        mainViewModel = ViewModelProvider(requireActivity()).get(MainViewModel::class.java)
 
-        val viewModelFactory = PlayerViewModelFactory(songId)
-        binding.viewModel = ViewModelProvider(this, viewModelFactory).get(PlayerViewModel::class.java)
+        subscribeToObservers()
 
         binding.playerPlayButton.setOnClickListener {
-            playSong()
+            currPlayingSong?.let {
+                mainViewModel.playOrPauseSong(it, true)
+            }
         }
+
+        binding.playerPrevButton.setOnClickListener {
+            mainViewModel.skipToPreviousSong()
+        }
+
+        binding.playerNextButton.setOnClickListener {
+            mainViewModel.skipToNextSong()
+        }
+
+        binding.playerTimeSlider.addOnSliderTouchListener(object : Slider.OnSliderTouchListener {
+            override fun onStartTrackingTouch(slider: Slider) {
+                updateSlider = false
+            }
+
+            override fun onStopTrackingTouch(slider: Slider) {
+                slider.let {
+                    mainViewModel.seekSongTo(it.value.toLong())
+                    updateSlider = true
+                }
+            }
+        })
+
+        binding.playerTimeSlider.addOnChangeListener { _, value, fromUser ->
+            if (fromUser) {
+                setCurrTimeTextView(value.toLong())
+            }
+        }
+
         Log.d(TAG, "onViewCreated ends")
     }
 
+    private fun subscribeToObservers() {
+        mainViewModel.mediaItems.observe(viewLifecycleOwner) { result ->
+            when (result.status) {
+                Status.SUCCESS -> {
+                    result.data?.let { songs ->
+                        if (currPlayingSong == null && songs.isNotEmpty()) {
+                            Log.d(TAG, "check check check")
+                            currPlayingSong = songs[0]
+                            updatePlayerData(songs[0])
+                        }
+                    }
+                }
+                else -> Unit
+            }
+        }
 
-    private fun playSong() {
-        val myUrl = binding.viewModel?.getSongUrl
-//        val mediaPlayer = MediaPlayer().apply {
-//            setAudioAttributes(
-//                AudioAttributes.Builder()
-//                    .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
-//                    .setUsage(AudioAttributes.USAGE_MEDIA)
-//                    .build()
-//            )
-//            setDataSource(myUrl)
-//            prepare()
-//            start()
-//        }
-//        mediaPlayer.release()
-        Log.d(TAG, "url is: $myUrl")
+        mainViewModel.currPlayingSong.observe(viewLifecycleOwner) {
+            if (it == null) return@observe
+            currPlayingSong = it.toSong()
+            updatePlayerData(currPlayingSong!!)
+        }
+
+        mainViewModel.playbackState.observe(viewLifecycleOwner) {
+            playbackState = it
+            binding.playerPlayButton.setImageResource(
+                if (playbackState?.isPlaying == true) R.drawable.ic_pause_48 else R.drawable.ic_play_arrow_48
+            )
+
+            binding.playerTimeSlider.value = it?.position?.toFloat() ?: 0F
+        }
+
+        playerViewModel.currPlayerPosition.observe(viewLifecycleOwner) {
+            if (updateSlider) {
+                binding.playerTimeSlider.value = it.toFloat()
+                setCurrTimeTextView(it)
+            }
+        }
+
+        playerViewModel.currSongDuration.observe(viewLifecycleOwner) {
+            Log.d(TAG, "ms: $it")
+            binding.playerTimeSlider.valueTo = it.toFloat()
+            val formattedTime = getMinSec(it)
+            binding.totalTimeTextView.text = formattedTime
+        }
+    }
+
+    private fun updatePlayerData(song: Song) {
+        binding.playerSongNameView.text = song.title
+        binding.playerArtistsView.text = song.artist.joinToString { name -> name }
+        glide.load(song.banner).into(binding.playerImageView)
+    }
+
+    private fun setCurrTimeTextView(time: Long) {
+        binding.currTimeTextView.text = getMinSec(time)
+    }
+
+    private fun getMinSec(ms: Long): String {
+        return if (ms > 0) {
+            val sec = ms / 1000
+            "${sec / 60}:${sec % 60}"
+        } else "00:00"
     }
 
 }

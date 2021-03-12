@@ -19,8 +19,5 @@
         android:name="com.vishalgaur.musicplayer.player.PlayerFragment"
         android:label="fragment_player"
         tools:layout="@layout/fragment_player" >
-        <argument
-            android:name="songId"
-            app:argType="long" />
     </fragment>
 </navigation>

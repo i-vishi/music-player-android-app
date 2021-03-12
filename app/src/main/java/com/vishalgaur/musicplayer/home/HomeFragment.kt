@@ -74,7 +74,9 @@ class HomeFragment : Fragment() {
 
         subscribeToObservers()
         adapter.setOnItemClickListener {
+            findNavController().navigate(HomeFragmentDirections.actionPlaySong())
             mainViewModel.playOrPauseSong(it)
+
         }
 
 //        adapter.onClickListener = object : SongItemAdapter.OnClickListener {
