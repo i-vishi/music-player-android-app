@@ -15,4 +15,5 @@
     <string name="player_artists">Artist 1, Artist 2, Artist 3</string>
     <string name="notification_channel_name">Music Channel</string>
     <string name="notification_channel_description">Shows the currently playing music</string>
+    <string name="progress_loading_songs">Loading Songs</string>
 </resources>

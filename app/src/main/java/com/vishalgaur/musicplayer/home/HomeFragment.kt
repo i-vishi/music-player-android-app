@@ -99,8 +99,12 @@ class HomeFragment : Fragment() {
                     result.data?.let { songs ->
                         adapter.songs = songs
                     }
+                    binding.progressIndicator.visibility = View.GONE
+                    binding.progressIndicator.hideAnimationBehavior
                 }
                 Status.LOADING -> {
+                    binding.progressIndicator.visibility = View.VISIBLE
+                    binding.progressIndicator.showAnimationBehavior
                 }
                 Status.ERROR -> Unit
             }
