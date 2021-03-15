@@ -96,6 +96,20 @@
             app:layout_constraintTop_toBottomOf="@+id/player_time_slider"
             tools:text="05:00" />
 
+        <ImageButton
+            android:id="@+id/player_prev_button"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_marginBottom="48dp"
+            android:background="@color/green"
+            android:contentDescription="@string/skip_prev_btn_desc"
+            android:scaleType="fitCenter"
+            android:src="@drawable/ic_skip_previous_24"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/player_play_button"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/player_time_slider" />
+
         <ImageView
             android:id="@+id/player_play_button"
             android:layout_width="72dp"
@@ -110,23 +124,9 @@
             app:layout_constraintTop_toBottomOf="@+id/player_time_slider" />
 
         <ImageButton
-            android:id="@+id/player_prev_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="48dp"
-            android:background="@color/green"
-            android:contentDescription="@string/skip_prev_btn_desc"
-            android:scaleType="fitCenter"
-            android:src="@drawable/ic_skip_previous_24"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/player_play_button"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/player_time_slider" />
-
-        <ImageButton
             android:id="@+id/player_next_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
             android:layout_marginBottom="48dp"
             android:background="@color/green"
             android:contentDescription="@string/skip_next_btn_desc"

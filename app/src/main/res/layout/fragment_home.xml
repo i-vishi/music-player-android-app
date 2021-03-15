@@ -47,7 +47,7 @@
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toBottomOf="@id/title_songs"
             app:layout_constraintVertical_bias="0.0"
-            tools:itemCount="16"
+            tools:itemCount="6"
             tools:listitem="@layout/song_list_item" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
