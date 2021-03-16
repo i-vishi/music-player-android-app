@@ -152,6 +152,7 @@ class MusicService : MediaBrowserServiceCompat() {
         override fun getMediaDescription(player: Player, windowIndex: Int): MediaDescriptionCompat {
             return musicSource.songs[windowIndex].description
         }
+
     }
 
     private fun preparePlayer(

@@ -16,4 +16,6 @@
     <string name="notification_channel_name">Music Channel</string>
     <string name="notification_channel_description">Shows the currently playing music</string>
     <string name="progress_loading_songs">Loading Songs</string>
+    <string name="shuffle_btn_description">Button to toggle Shuffle Playlist</string>
+    <string name="loop_btn_description">Button to loop playlist, current song or stop looping</string>
 </resources>

@@ -40,6 +40,9 @@ class PlayerFragment : Fragment() {
 
 	private var playbackState: PlaybackStateCompat? = null
 
+	private var shuffleState: Int? = null
+	private var repeatState: Int? = null
+
 	private var updateSlider = true
 
 //    class PlayerViewModelFactory(private val songId: String) : ViewModelProvider.Factory {
@@ -53,9 +56,9 @@ class PlayerFragment : Fragment() {
 //    }
 
 	override fun onCreateView(
-            inflater: LayoutInflater, container: ViewGroup?,
-            savedInstanceState: Bundle?
-    ): View {
+			inflater: LayoutInflater, container: ViewGroup?,
+			savedInstanceState: Bundle?
+	): View {
 		Log.d(TAG, "onCreateView Starts")
 		binding = FragmentPlayerBinding.inflate(inflater)
 		binding.lifecycleOwner = this
@@ -69,6 +72,9 @@ class PlayerFragment : Fragment() {
 		super.onViewCreated(view, savedInstanceState)
 
 		binding.viewModel = playerViewModel
+
+		//setting shuffle to false initially
+
 
 		mainViewModel = ViewModelProvider(requireActivity()).get(MainViewModel::class.java)
 
@@ -89,22 +95,30 @@ class PlayerFragment : Fragment() {
 		}
 
 		binding.playerTimeSlider.addOnSliderTouchListener(object : Slider.OnSliderTouchListener {
-            override fun onStartTrackingTouch(slider: Slider) {
-                updateSlider = false
-            }
+			override fun onStartTrackingTouch(slider: Slider) {
+				updateSlider = false
+			}
 
-            override fun onStopTrackingTouch(slider: Slider) {
-                slider.let {
-                    mainViewModel.seekSongTo(it.value.toLong())
-                    updateSlider = true
-                }
-            }
-        })
+			override fun onStopTrackingTouch(slider: Slider) {
+				slider.let {
+					mainViewModel.seekSongTo(it.value.toLong())
+					updateSlider = true
+				}
+			}
+		})
 
 		binding.playerTimeSlider.addOnChangeListener { _, value, fromUser ->
 			if (fromUser) {
 				setCurrTimeTextView(value.toLong())
 			}
+		}
+
+		binding.playerShuffleButton.setOnClickListener {
+			mainViewModel.toggleShuffleState()
+		}
+
+		binding.playerLoopButton.setOnClickListener {
+			mainViewModel.toggleRepeatState()
 		}
 
 		Log.d(TAG, "onViewCreated ends")
@@ -114,14 +128,14 @@ class PlayerFragment : Fragment() {
 		mainViewModel.mediaItems.observe(viewLifecycleOwner) {
 			it?.let { result ->
 				when (result.status) {
-                    Status.SUCCESS -> {
-                        result.data?.let { songs ->
-                            if (currPlayingSong == null && songs.isNotEmpty()) {
-                                currPlayingSong = songs[0]
-                                updatePlayerData(songs[0])
-                            }
-                        }
-                    }
+					Status.SUCCESS -> {
+						result.data?.let { songs ->
+							if (currPlayingSong == null && songs.isNotEmpty()) {
+								currPlayingSong = songs[0]
+								updatePlayerData(songs[0])
+							}
+						}
+					}
 					else -> Unit
 				}
 			}
@@ -136,10 +150,28 @@ class PlayerFragment : Fragment() {
 		mainViewModel.playbackState.observe(viewLifecycleOwner) {
 			playbackState = it
 			binding.playerPlayButton.setImageResource(
-                    if (playbackState?.isPlaying == true) R.drawable.ic_pause_48 else R.drawable.ic_play_arrow_48
-            )
+					if (playbackState?.isPlaying == true) R.drawable.ic_pause_48 else R.drawable.ic_play_arrow_48
+			)
 
 			binding.playerTimeSlider.value = it?.position?.toFloat() ?: 0F
+		}
+
+		mainViewModel.shuffleState.observe(viewLifecycleOwner) {
+			shuffleState = it
+			binding.playerShuffleButton.setImageResource(
+					if (shuffleState == 1) R.drawable.ic_shuffle_on_24 else R.drawable.ic_shuffle_24
+			)
+		}
+
+		mainViewModel.repeatState.observe(viewLifecycleOwner) {
+			repeatState = it
+			binding.playerLoopButton.setImageResource(
+					when (repeatState) {
+						1 -> R.drawable.ic_repeat_one_on_24
+						2 -> R.drawable.ic_repeat_on_24
+						else -> R.drawable.ic_repeat_24
+					}
+			)
 		}
 
 		playerViewModel.currPlayerPosition.observe(viewLifecycleOwner) {

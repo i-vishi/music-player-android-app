@@ -24,6 +24,12 @@ class MusicServiceConnection(context: Context) {
     private val _playbackState = MutableLiveData<PlaybackStateCompat?>()
     val playbackState: LiveData<PlaybackStateCompat?> get() = _playbackState
 
+    private val _shuffleState = MutableLiveData<Int?>()
+    val shuffleState : LiveData<Int?> get() = _shuffleState
+
+    private val _repeatState = MutableLiveData<Int?>()
+    val repeatState: LiveData<Int?> get() = _repeatState
+
     private val _currPlayingSong = MutableLiveData<MediaMetadataCompat?>()
     val currPlayingSong: LiveData<MediaMetadataCompat?> get() = _currPlayingSong
 
@@ -71,6 +77,17 @@ class MusicServiceConnection(context: Context) {
                     )
                 )
             }
+        }
+
+        override fun onRepeatModeChanged(repeatMode: Int) {
+//            val ch = mediaController.repeatMode
+            super.onRepeatModeChanged(repeatMode)
+            _repeatState.value = repeatMode
+        }
+
+        override fun onShuffleModeChanged(shuffleMode: Int) {
+            super.onShuffleModeChanged(shuffleMode)
+            _shuffleState.value = shuffleMode
         }
 
         override fun onSessionDestroyed() {
