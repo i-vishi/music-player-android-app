@@ -25,9 +25,8 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="3"
-            android:background="@color/white"
             android:contentDescription="@string/song_card_desc"
-            android:scaleType="centerCrop"
+            android:scaleType="fitCenter"
             app:srcCompat="@drawable/ic_baseline_music_note_24" />
 
         <LinearLayout
