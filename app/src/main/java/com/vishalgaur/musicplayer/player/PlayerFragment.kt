@@ -6,6 +6,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.SeekBar
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
@@ -94,24 +95,23 @@ class PlayerFragment : Fragment() {
 			mainViewModel.skipToNextSong()
 		}
 
-		binding.playerTimeSlider.addOnSliderTouchListener(object : Slider.OnSliderTouchListener {
-			override fun onStartTrackingTouch(slider: Slider) {
+		binding.playerTimeSlider.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
+			override fun onStartTrackingTouch(seekBar: SeekBar?) {
 				updateSlider = false
 			}
 
-			override fun onStopTrackingTouch(slider: Slider) {
-				slider.let {
-					mainViewModel.seekSongTo(it.value.toLong())
+			override fun onStopTrackingTouch(seekBar: SeekBar?) {
+				seekBar?.let {
+					mainViewModel.seekSongTo(it.progress.toLong())
 					updateSlider = true
+				}			}
+
+			override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
+				if (fromUser) {
+					setCurrTimeTextView(progress.toLong())
 				}
 			}
 		})
-
-		binding.playerTimeSlider.addOnChangeListener { _, value, fromUser ->
-			if (fromUser) {
-				setCurrTimeTextView(value.toLong())
-			}
-		}
 
 		binding.playerShuffleButton.setOnClickListener {
 			mainViewModel.toggleShuffleState()
@@ -153,7 +153,7 @@ class PlayerFragment : Fragment() {
 					if (playbackState?.isPlaying == true) R.drawable.ic_pause_48 else R.drawable.ic_play_arrow_48
 			)
 
-			binding.playerTimeSlider.value = it?.position?.toFloat() ?: 0F
+			binding.playerTimeSlider.progress = it?.position?.toInt() ?: 0
 		}
 
 		mainViewModel.shuffleState.observe(viewLifecycleOwner) {
@@ -176,13 +176,13 @@ class PlayerFragment : Fragment() {
 
 		playerViewModel.currPlayerPosition.observe(viewLifecycleOwner) {
 			if (updateSlider) {
-				binding.playerTimeSlider.value = it.toFloat()
+				binding.playerTimeSlider.progress = it.toInt()
 				setCurrTimeTextView(it)
 			}
 		}
 
 		playerViewModel.currSongDuration.observe(viewLifecycleOwner) {
-			binding.playerTimeSlider.valueTo = it.toFloat()
+			binding.playerTimeSlider.max = it.toInt()
 			val formattedTime = getMinSec(it)
 			binding.totalTimeTextView.text = formattedTime
 		}

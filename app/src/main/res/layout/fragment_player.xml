@@ -68,23 +68,18 @@
             app:layout_constraintTop_toBottomOf="@+id/player_time_slider"
             tools:text="00:00" />
 
-        <com.google.android.material.slider.Slider
+        <SeekBar
             android:id="@+id/player_time_slider"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="32dp"
+            android:layout_marginStart="16dp"
             android:layout_marginTop="32dp"
-            android:layout_marginEnd="32dp"
-            android:value="20.0"
-            android:valueFrom="0.0"
-            android:valueTo="100.0"
+            android:layout_marginEnd="16dp"
+            android:progress="20"
+            android:progressBackgroundTint="@color/gray"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/player_artists_view"
-            app:thumbColor="@color/green"
-            app:thumbRadius="7dp"
-            app:trackColorActive="?attr/colorSecondary"
-            app:trackColorInactive="@color/white" />
+            app:layout_constraintTop_toBottomOf="@+id/player_artists_view" />
 
         <TextView
             android:id="@+id/total_time_text_view"
@@ -100,10 +95,10 @@
             android:id="@+id/player_shuffle_button"
             android:layout_width="40dp"
             android:layout_height="40dp"
-            android:layout_marginStart="16dp"
             android:layout_marginBottom="48dp"
             android:contentDescription="@string/shuffle_btn_description"
             app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/player_prev_button"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/player_time_slider"
             app:srcCompat="@drawable/ic_shuffle_24" />
@@ -112,15 +107,14 @@
             android:id="@+id/player_prev_button"
             android:layout_width="48dp"
             android:layout_height="48dp"
-            android:layout_marginBottom="48dp"
+            android:layout_marginEnd="16dp"
             android:background="@color/green"
             android:contentDescription="@string/skip_prev_btn_desc"
             android:scaleType="fitCenter"
             android:src="@drawable/ic_skip_previous_24"
-            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintBottom_toBottomOf="@+id/player_play_button"
             app:layout_constraintEnd_toStartOf="@+id/player_play_button"
-            app:layout_constraintStart_toEndOf="@+id/player_shuffle_button"
-            app:layout_constraintTop_toBottomOf="@+id/player_time_slider" />
+            app:layout_constraintTop_toTopOf="@+id/player_play_button" />
 
         <ImageView
             android:id="@+id/player_play_button"
@@ -139,25 +133,24 @@
             android:id="@+id/player_next_button"
             android:layout_width="48dp"
             android:layout_height="48dp"
-            android:layout_marginBottom="48dp"
+            android:layout_marginStart="16dp"
             android:background="@color/green"
             android:contentDescription="@string/skip_next_btn_desc"
             android:scaleType="fitCenter"
             android:src="@drawable/ic_skip_next_24"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/player_loop_button"
+            app:layout_constraintBottom_toBottomOf="@+id/player_play_button"
             app:layout_constraintStart_toEndOf="@+id/player_play_button"
-            app:layout_constraintTop_toBottomOf="@+id/player_time_slider" />
+            app:layout_constraintTop_toTopOf="@+id/player_play_button" />
 
         <ImageView
             android:id="@+id/player_loop_button"
             android:layout_width="40dp"
             android:layout_height="40dp"
-            android:layout_marginEnd="16dp"
             android:layout_marginBottom="48dp"
             android:contentDescription="@string/loop_btn_description"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/player_next_button"
             app:layout_constraintTop_toBottomOf="@+id/player_time_slider"
             app:srcCompat="@drawable/ic_repeat_24" />
     </androidx.constraintlayout.widget.ConstraintLayout>
