@@ -18,27 +18,27 @@ import dagger.hilt.android.scopes.ServiceScoped
 @InstallIn(ServiceComponent::class)
 object ServiceModule {
 
-    @ServiceScoped
-    @Provides
-    fun provideMusicDatabase() = SongDatabase()
+	@ServiceScoped
+	@Provides
+	fun provideMusicDatabase() = SongDatabase()
 
-    @ServiceScoped
-    @Provides
-    fun provideAudioAttributes() = AudioAttributes.Builder()
-        .setContentType(C.CONTENT_TYPE_MUSIC)
-        .setUsage(C.USAGE_MEDIA)
-        .build()
+	@ServiceScoped
+	@Provides
+	fun provideAudioAttributes() = AudioAttributes.Builder()
+			.setContentType(C.CONTENT_TYPE_MUSIC)
+			.setUsage(C.USAGE_MEDIA)
+			.build()
 
-    @ServiceScoped
-    @Provides
-    fun provideExoPlayer(@ApplicationContext context: Context, audioAttributes: AudioAttributes) =
-        SimpleExoPlayer.Builder(context).build().apply {
-            setAudioAttributes(audioAttributes, true)
-            setHandleAudioBecomingNoisy(true)
-        }
+	@ServiceScoped
+	@Provides
+	fun provideExoPlayer(@ApplicationContext context: Context, audioAttributes: AudioAttributes) =
+			SimpleExoPlayer.Builder(context).build().apply {
+				setAudioAttributes(audioAttributes, true)
+				setHandleAudioBecomingNoisy(true)
+			}
 
-    @ServiceScoped
-    @Provides
-    fun provideDataSourceFactory(@ApplicationContext context: Context) =
-        DefaultDataSourceFactory(context, Util.getUserAgent(context, "Music Player App"))
+	@ServiceScoped
+	@Provides
+	fun provideDataSourceFactory(@ApplicationContext context: Context) =
+			DefaultDataSourceFactory(context, Util.getUserAgent(context, "Music Player App"))
 }

@@ -17,19 +17,19 @@ import javax.inject.Singleton
 @InstallIn(SingletonComponent::class)
 object AppModule {
 
-    @Singleton
-    @Provides
-    fun provideMusicServiceConnection(@ApplicationContext context: Context) =
-        MusicServiceConnection(context)
+	@Singleton
+	@Provides
+	fun provideMusicServiceConnection(@ApplicationContext context: Context) =
+			MusicServiceConnection(context)
 
-    @Singleton
-    @Provides
-    fun provideGlideInstance(
-        @ApplicationContext context: Context
+	@Singleton
+	@Provides
+	fun provideGlideInstance(
+            @ApplicationContext context: Context
     ) = Glide.with(context).setDefaultRequestOptions(
-        RequestOptions()
-            .placeholder(R.drawable.ic_baseline_music_note_24)
-            .error(R.drawable.ic_baseline_music_note_24)
-            .diskCacheStrategy(DiskCacheStrategy.DATA)
+            RequestOptions()
+                    .placeholder(R.drawable.ic_baseline_music_note_24)
+                    .error(R.drawable.ic_baseline_music_note_24)
+                    .diskCacheStrategy(DiskCacheStrategy.DATA)
     )
 }

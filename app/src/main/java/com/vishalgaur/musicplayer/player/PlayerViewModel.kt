@@ -9,34 +9,32 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-private const val TAG = "PlayerViewModel"
-
 @HiltViewModel
-class PlayerViewModel @Inject constructor(private val musicServiceConnection: MusicServiceConnection) :
-    ViewModel() {
+class PlayerViewModel @Inject constructor(musicServiceConnection: MusicServiceConnection) :
+		ViewModel() {
 
-    private val playbackState = musicServiceConnection.playbackState
+	private val playbackState = musicServiceConnection.playbackState
 
-    private val _currSongDuration = MutableLiveData<Long>()
-    val currSongDuration: LiveData<Long> get() = _currSongDuration
+	private val _currSongDuration = MutableLiveData<Long>()
+	val currSongDuration: LiveData<Long> get() = _currSongDuration
 
-    private val _currPlayerPosition = MutableLiveData<Long>()
-    val currPlayerPosition: LiveData<Long> get() = _currPlayerPosition
+	private val _currPlayerPosition = MutableLiveData<Long>()
+	val currPlayerPosition: LiveData<Long> get() = _currPlayerPosition
 
-    init {
-        updatePlayerPosition()
-    }
+	init {
+		updatePlayerPosition()
+	}
 
-    private fun updatePlayerPosition() {
-        viewModelScope.launch {
-            while (true) {
-                val position = playbackState.value?.currentPlaybackPosition
-                if (currPlayerPosition.value != position) {
-                    _currPlayerPosition.value = position!!
-                    _currSongDuration.value = MusicService.currSongDuration
-                }
-                delay(100L)
-            }
-        }
-    }
+	private fun updatePlayerPosition() {
+		viewModelScope.launch {
+			while (true) {
+				val position = playbackState.value?.currentPlaybackPosition
+				if (currPlayerPosition.value != position) {
+					_currPlayerPosition.value = position!!
+					_currSongDuration.value = MusicService.currSongDuration
+				}
+				delay(100L)
+			}
+		}
+	}
 }
