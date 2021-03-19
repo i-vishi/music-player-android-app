@@ -21,6 +21,7 @@ import com.vishalgaur.musicplayer.network.toSong
 import dagger.hilt.android.AndroidEntryPoint
 import java.util.*
 import javax.inject.Inject
+import kotlin.math.roundToInt
 
 private const val TAG = "PlayerFragment"
 
@@ -42,6 +43,7 @@ class PlayerFragment : Fragment() {
 
 	private var shuffleState: Int? = null
 	private var repeatState: Int? = null
+	private var playbackSpeed: Float? = null
 
 	private var updateSlider = true
 
@@ -108,6 +110,10 @@ class PlayerFragment : Fragment() {
 			mainViewModel.toggleRepeatState()
 		}
 
+		binding.playerSpeedTextView.setOnClickListener {
+			mainViewModel.togglePlaybackSpeed()
+		}
+
 		Log.d(TAG, "onViewCreated ends")
 	}
 
@@ -159,6 +165,14 @@ class PlayerFragment : Fragment() {
 						else -> R.drawable.ic_repeat_24
 					}
 			)
+		}
+
+		mainViewModel.playbackSpeed.observe(viewLifecycleOwner) {
+			playbackSpeed = it
+			binding.playerSpeedTextView.text = when (playbackSpeed) {
+				1.0f -> getString(R.string.play_speed, playbackSpeed!!.roundToInt().toString())
+				else -> getString(R.string.play_speed, playbackSpeed.toString())
+			}
 		}
 
 		playerViewModel.currPlayerPosition.observe(viewLifecycleOwner) {

@@ -7,13 +7,18 @@ import android.support.v4.media.MediaBrowserCompat
 import android.support.v4.media.MediaDescriptionCompat
 import android.support.v4.media.MediaMetadataCompat
 import android.support.v4.media.session.MediaSessionCompat
+import android.support.v4.media.session.PlaybackStateCompat
 import android.util.Log
+import androidx.core.os.bundleOf
 import androidx.media.MediaBrowserServiceCompat
+import com.google.android.exoplayer2.PlaybackParameters
 import com.google.android.exoplayer2.Player
 import com.google.android.exoplayer2.SimpleExoPlayer
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory
 import com.google.android.exoplayer2.ext.mediasession.MediaSessionConnector
 import com.google.android.exoplayer2.ext.mediasession.TimelineQueueNavigator
+import com.vishalgaur.musicplayer.R
+import com.vishalgaur.musicplayer.network.ACTION_SET_PLAYBACK_SPEED
 import com.vishalgaur.musicplayer.network.MEDIA_ROOT_ID
 import com.vishalgaur.musicplayer.network.NETWORK_ERROR
 import dagger.hilt.android.AndroidEntryPoint
@@ -48,6 +53,12 @@ class MusicService : MediaBrowserServiceCompat() {
 
 	private var currentPlayingSong: MediaMetadataCompat? = null
 
+	private val stateBuilder = PlaybackStateCompat.Builder().addCustomAction(
+			ACTION_SET_PLAYBACK_SPEED,
+			"setPlaybackSpeed",
+			R.drawable.ic_speed_24
+	)
+
 	companion object {
 		var currSongDuration = 0L
 			private set
@@ -73,11 +84,10 @@ class MusicService : MediaBrowserServiceCompat() {
 		sessionToken = mediaSession.sessionToken
 
 		musicNotificationManager = MusicNotificationManager(
-                this,
-                mediaSession.sessionToken,
-                MusicNotificationListener(this)
-        ) {
-
+				this,
+				mediaSession.sessionToken,
+				MusicNotificationListener(this)
+		) {
 			// exoplayer returns negative value sometimes =====> added static duration to handle it
 			currSongDuration = if (exoPlayer.duration >= 0) exoPlayer.duration else 0
 		}
@@ -104,38 +114,49 @@ class MusicService : MediaBrowserServiceCompat() {
 
 	}
 
+	override fun onCustomAction(action: String, extras: Bundle?, result: Result<Bundle>) {
+		if (ACTION_SET_PLAYBACK_SPEED == action) {
+			stateBuilder.setState(PlaybackStateCompat.STATE_PLAYING, mediaSession.controller.playbackState.position, extras!!.getFloat("playbackSpeed"))
+			mediaSession.setPlaybackState(stateBuilder.build())
+			exoPlayer.setPlaybackParameters(PlaybackParameters(extras.getFloat("playbackSpeed")))
+			result.sendResult(bundleOf("playbackSpeed" to 1.5f))
+		}
+	}
+
+
 	override fun onGetRoot(
-            clientPackageName: String,
-            clientUid: Int,
-            rootHints: Bundle?
-    ): BrowserRoot {
+			clientPackageName: String,
+			clientUid: Int,
+			rootHints: Bundle?
+	): BrowserRoot {
 		return BrowserRoot(MEDIA_ROOT_ID, null)
 	}
 
 	override fun onLoadChildren(
-            parentId: String,
-            result: Result<MutableList<MediaBrowserCompat.MediaItem>>
-    ) {
+			parentId: String,
+			result: Result<MutableList<MediaBrowserCompat.MediaItem>>
+	) {
 		when (parentId) {
-            MEDIA_ROOT_ID -> {
-                val resultsSent = musicSource.whenReady { isInitialized ->
-                    if (isInitialized) {
-                        result.sendResult(musicSource.asMediaItems())
-                        if (!isPlayerInitialized && musicSource.songs.isNotEmpty()) {
-                            preparePlayer(musicSource.songs, musicSource.songs[0], false)
-                            isPlayerInitialized = true
-                        }
-                    } else {
-                        mediaSession.sendSessionEvent(NETWORK_ERROR, null)
-                        result.sendResult(null)
-                    }
-                }
-                if (!resultsSent) {
-                    result.detach()
-                }
-            }
+			MEDIA_ROOT_ID -> {
+				val resultsSent = musicSource.whenReady { isInitialized ->
+					if (isInitialized) {
+						result.sendResult(musicSource.asMediaItems())
+						if (!isPlayerInitialized && musicSource.songs.isNotEmpty()) {
+							preparePlayer(musicSource.songs, musicSource.songs[0], false)
+							isPlayerInitialized = true
+						}
+					} else {
+						mediaSession.sendSessionEvent(NETWORK_ERROR, null)
+						result.sendResult(null)
+					}
+				}
+				if (!resultsSent) {
+					result.detach()
+				}
+			}
 		}
 	}
+
 
 	override fun onTaskRemoved(rootIntent: Intent?) {
 		super.onTaskRemoved(rootIntent)
@@ -159,10 +180,10 @@ class MusicService : MediaBrowserServiceCompat() {
 	}
 
 	private fun preparePlayer(
-            songs: List<MediaMetadataCompat>,
-            itemToBePlayed: MediaMetadataCompat?,
-            playNow: Boolean
-    ) {
+			songs: List<MediaMetadataCompat>,
+			itemToBePlayed: MediaMetadataCompat?,
+			playNow: Boolean
+	) {
 		val currSongIndex = if (currentPlayingSong == null) 0 else songs.indexOf(itemToBePlayed)
 		exoPlayer.prepare(musicSource.asMediaSource(defaultDataSourceFactory))        // deprecated    use setMediaSource and prepare() instead
 //        exoPlayer.setMediaSource(musicSource.asMediaSource(defaultDataSourceFactory))
@@ -170,5 +191,4 @@ class MusicService : MediaBrowserServiceCompat() {
 		exoPlayer.seekTo(currSongIndex, 0L)
 		exoPlayer.playWhenReady = playNow
 	}
-
 }

@@ -16,6 +16,38 @@
         android:background="@color/black_900"
         tools:context=".player.PlayerFragment">
 
+        <TextView
+            android:id="@+id/player_song_name_view"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_margin="32dp"
+            android:fontFamily="@font/ubuntu"
+            android:textAlignment="center"
+            android:textAppearance="@style/TextAppearance.MdcTypographyStyles.Body1"
+            android:textColor="@color/white"
+            android:textSize="24sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="@string/player_song_name" />
+
+        <TextView
+            android:id="@+id/player_artists_view"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="32dp"
+            android:layout_marginTop="4dp"
+            android:layout_marginEnd="32dp"
+            android:fontFamily="@font/roboto"
+            android:textAlignment="center"
+            android:textAppearance="@style/TextAppearance.MdcTypographyStyles.Caption"
+            android:textColor="@color/white"
+            android:textSize="16sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/player_song_name_view"
+            tools:text="@string/player_artists" />
+
         <ImageView
             android:id="@+id/player_image_view"
             android:layout_width="match_parent"
@@ -25,48 +57,9 @@
             android:contentDescription="@string/song_card_desc"
             android:scaleType="fitCenter"
             android:src="@drawable/ic_baseline_music_note_24"
-            app:layout_constraintTop_toTopOf="parent"
-            tools:layout_editor_absoluteX="32dp" />
-
-        <TextView
-            android:id="@+id/player_song_name_view"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_margin="32dp"
-            android:textAlignment="center"
-            android:textAppearance="@style/TextAppearance.MdcTypographyStyles.Body1"
-            android:textColor="@color/white"
-            android:textSize="24sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/player_image_view"
-            tools:text="@string/player_song_name" />
-
-        <TextView
-            android:id="@+id/player_artists_view"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="32dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginEnd="32dp"
-            android:textAlignment="center"
-            android:textAppearance="@style/TextAppearance.MdcTypographyStyles.Caption"
-            android:textColor="@color/white"
-            android:textSize="14sp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/player_song_name_view"
-            tools:text="@string/player_artists" />
-
-        <TextView
-            android:id="@+id/curr_time_text_view"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="32dp"
-            android:textColor="@color/white"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/player_time_slider"
-            tools:text="00:00" />
+            app:layout_constraintTop_toBottomOf="@+id/player_artists_view" />
 
         <SeekBar
             android:id="@+id/player_time_slider"
@@ -79,7 +72,17 @@
             android:progressBackgroundTint="@color/gray"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/player_artists_view" />
+            app:layout_constraintTop_toBottomOf="@+id/player_image_view" />
+
+        <TextView
+            android:id="@+id/curr_time_text_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="32dp"
+            android:textColor="@color/white"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/player_time_slider"
+            tools:text="00:00" />
 
         <TextView
             android:id="@+id/total_time_text_view"
@@ -90,18 +93,6 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/player_time_slider"
             tools:text="05:00" />
-
-        <ImageView
-            android:id="@+id/player_shuffle_button"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:layout_marginBottom="48dp"
-            android:contentDescription="@string/shuffle_btn_description"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/player_prev_button"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/player_time_slider"
-            app:srcCompat="@drawable/ic_shuffle_24" />
 
         <ImageButton
             android:id="@+id/player_prev_button"
@@ -120,11 +111,10 @@
             android:id="@+id/player_play_button"
             android:layout_width="72dp"
             android:layout_height="72dp"
-            android:layout_marginBottom="48dp"
+            android:layout_marginTop="32dp"
             android:background="@color/green"
             android:contentDescription="@string/play_button_desc"
             android:src="@drawable/ic_play_arrow_48"
-            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/player_time_slider" />
@@ -143,15 +133,43 @@
             app:layout_constraintTop_toTopOf="@+id/player_play_button" />
 
         <ImageView
-            android:id="@+id/player_loop_button"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:layout_marginBottom="48dp"
-            android:contentDescription="@string/loop_btn_description"
+            android:id="@+id/player_shuffle_button"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:layout_marginStart="32dp"
+            android:contentDescription="@string/shuffle_btn_description"
+            app:layout_constraintBottom_toBottomOf="@+id/player_speed_text_view"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/player_speed_text_view"
+            app:srcCompat="@drawable/ic_shuffle_24" />
+
+        <TextView
+            android:id="@+id/player_speed_text_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:fontFamily="@font/maven_pro"
+            android:gravity="center"
+            android:text="@string/default_play_speed"
+            android:textColor="@color/green"
+            android:textSize="22sp"
+            android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/player_next_button"
-            app:layout_constraintTop_toBottomOf="@+id/player_time_slider"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/player_play_button"
+            tools:text="1.25x" />
+
+        <ImageView
+            android:id="@+id/player_loop_button"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:layout_marginEnd="32dp"
+            android:contentDescription="@string/loop_btn_description"
+            app:layout_constraintBottom_toBottomOf="@+id/player_speed_text_view"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/player_speed_text_view"
             app:srcCompat="@drawable/ic_repeat_24" />
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

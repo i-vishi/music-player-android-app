@@ -7,11 +7,14 @@ import android.support.v4.media.MediaBrowserCompat
 import android.support.v4.media.MediaMetadataCompat
 import android.support.v4.media.session.MediaControllerCompat
 import android.support.v4.media.session.PlaybackStateCompat
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.vishalgaur.musicplayer.network.Event
 import com.vishalgaur.musicplayer.network.NETWORK_ERROR
 import com.vishalgaur.musicplayer.network.Resource
+
+private const val TAG = "MusicServiceConnection"
 
 class MusicServiceConnection(context: Context) {
 
@@ -30,6 +33,9 @@ class MusicServiceConnection(context: Context) {
 	private val _repeatState = MutableLiveData<Int?>()
 	val repeatState: LiveData<Int?> get() = _repeatState
 
+	private val _playbackSpeed = MutableLiveData<Float?>()
+	val playbackSpeed: LiveData<Float?> get() = _playbackSpeed
+
 	private val _currPlayingSong = MutableLiveData<MediaMetadataCompat?>()
 	val currPlayingSong: LiveData<MediaMetadataCompat?> get() = _currPlayingSong
 
@@ -37,12 +43,12 @@ class MusicServiceConnection(context: Context) {
 
 	private val mediaBrowserConnectionCallback = MediaBrowserConnectionCallback(context)
 
-	private val mediaBrowser = MediaBrowserCompat(
-            context,
-            ComponentName(context, MusicService::class.java),
-            mediaBrowserConnectionCallback,
-            null
-    ).apply { connect() }
+	val mediaBrowser = MediaBrowserCompat(
+			context,
+			ComponentName(context, MusicService::class.java),
+			mediaBrowserConnectionCallback,
+			null
+	).apply { connect() }
 
 	val transportControls: MediaControllerCompat.TransportControls
 		get() = mediaController.transportControls
@@ -59,6 +65,9 @@ class MusicServiceConnection(context: Context) {
 
 		override fun onPlaybackStateChanged(state: PlaybackStateCompat?) {
 			_playbackState.value = state
+			if (state?.playbackSpeed != 0f) {
+				_playbackSpeed.value = state?.playbackSpeed
+			}
 		}
 
 		override fun onMetadataChanged(metadata: MediaMetadataCompat?) {
@@ -68,14 +77,14 @@ class MusicServiceConnection(context: Context) {
 		override fun onSessionEvent(event: String?, extras: Bundle?) {
 			super.onSessionEvent(event, extras)
 			when (event) {
-                NETWORK_ERROR -> _networkError.postValue(
-                        Event(
-                                Resource.error(
-                                        "Couldn't Connect! Check your network connection.",
-                                        null
-                                )
-                        )
-                )
+				NETWORK_ERROR -> _networkError.postValue(
+						Event(
+								Resource.error(
+										"Couldn't Connect! Check your network connection.",
+										null
+								)
+						)
+				)
 			}
 		}
 
@@ -93,7 +102,6 @@ class MusicServiceConnection(context: Context) {
 			mediaBrowserConnectionCallback.onConnectionSuspended()
 		}
 	}
-
 
 	private inner class MediaBrowserConnectionCallback(private val context: Context) :
 			MediaBrowserCompat.ConnectionCallback() {

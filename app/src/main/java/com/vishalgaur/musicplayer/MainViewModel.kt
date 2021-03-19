@@ -4,6 +4,7 @@ import android.support.v4.media.MediaBrowserCompat
 import android.support.v4.media.MediaMetadataCompat.METADATA_KEY_MEDIA_ID
 import android.support.v4.media.session.PlaybackStateCompat
 import android.util.Log
+import androidx.core.os.bundleOf
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -28,6 +29,7 @@ class MainViewModel @Inject constructor(private val musicServiceConnection: Musi
 	val playbackState = musicServiceConnection.playbackState
 	val shuffleState = musicServiceConnection.shuffleState
 	val repeatState = musicServiceConnection.repeatState
+	val playbackSpeed = musicServiceConnection.playbackSpeed
 
 	init {
 		_mediaItems.value = Resource.loading(null)
@@ -113,6 +115,22 @@ class MainViewModel @Inject constructor(private val musicServiceConnection: Musi
 			}
 		} else {
 			musicServiceConnection.transportControls.setRepeatMode(PlaybackStateCompat.REPEAT_MODE_ALL)
+		}
+	}
+
+	fun togglePlaybackSpeed() {
+		if (playbackSpeed.value != null) {
+			playbackSpeed.value?.let {
+				when (it) {
+					1.0f -> musicServiceConnection.mediaBrowser.sendCustomAction(ACTION_SET_PLAYBACK_SPEED, bundleOf("playbackSpeed" to 1.25f), null)
+					1.25f -> musicServiceConnection.mediaBrowser.sendCustomAction(ACTION_SET_PLAYBACK_SPEED, bundleOf("playbackSpeed" to 1.5f), null)
+					1.5f -> musicServiceConnection.mediaBrowser.sendCustomAction(ACTION_SET_PLAYBACK_SPEED, bundleOf("playbackSpeed" to 2.0f), null)
+					2.0f -> musicServiceConnection.mediaBrowser.sendCustomAction(ACTION_SET_PLAYBACK_SPEED, bundleOf("playbackSpeed" to 1.0f), null)
+					else -> musicServiceConnection.mediaBrowser.sendCustomAction(ACTION_SET_PLAYBACK_SPEED, bundleOf("playbackSpeed" to 1.5f), null)
+				}
+			}
+		} else {
+			musicServiceConnection.mediaBrowser.sendCustomAction(ACTION_SET_PLAYBACK_SPEED, bundleOf("playbackSpeed" to 1.0f), null)
 		}
 	}
 

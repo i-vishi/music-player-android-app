@@ -18,4 +18,6 @@
     <string name="progress_loading_songs">Loading Songs</string>
     <string name="shuffle_btn_description">Button to toggle Shuffle Playlist</string>
     <string name="loop_btn_description">Button to loop playlist, current song or stop looping</string>
+    <string name="play_speed">%sx</string>
+    <string name="default_play_speed">1x</string>
 </resources>

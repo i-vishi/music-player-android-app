@@ -7,6 +7,8 @@ import android.support.v4.media.session.PlaybackStateCompat
 
 const val NETWORK_ERROR = "NETWORK_ERROR"
 const val MEDIA_ROOT_ID = "root_id"
+const val ACTION_SET_PLAYBACK_SPEED = "ACTION_SET_PLAYBACK_SPEED"
+
 
 
 //extending PlaybackStateCompat to merge states inline
