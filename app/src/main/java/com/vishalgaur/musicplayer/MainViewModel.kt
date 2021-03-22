@@ -22,9 +22,6 @@ class MainViewModel @Inject constructor(private val musicServiceConnection: Musi
 
 	private val _mediaItems = MutableLiveData<Resource<List<Song>>>()
 	val mediaItems: LiveData<Resource<List<Song>>> get() = _mediaItems
-
-	val isConnected = musicServiceConnection.isConnected
-	val networkError = musicServiceConnection.networkError
 	val currPlayingSong = musicServiceConnection.currPlayingSong
 	val playbackState = musicServiceConnection.playbackState
 	val shuffleState = musicServiceConnection.shuffleState
@@ -118,19 +115,9 @@ class MainViewModel @Inject constructor(private val musicServiceConnection: Musi
 		}
 	}
 
-	fun togglePlaybackSpeed() {
-		if (playbackSpeed.value != null) {
-			playbackSpeed.value?.let {
-				when (it) {
-					1.0f -> musicServiceConnection.mediaBrowser.sendCustomAction(ACTION_SET_PLAYBACK_SPEED, bundleOf("playbackSpeed" to 1.25f), null)
-					1.25f -> musicServiceConnection.mediaBrowser.sendCustomAction(ACTION_SET_PLAYBACK_SPEED, bundleOf("playbackSpeed" to 1.5f), null)
-					1.5f -> musicServiceConnection.mediaBrowser.sendCustomAction(ACTION_SET_PLAYBACK_SPEED, bundleOf("playbackSpeed" to 2.0f), null)
-					2.0f -> musicServiceConnection.mediaBrowser.sendCustomAction(ACTION_SET_PLAYBACK_SPEED, bundleOf("playbackSpeed" to 1.0f), null)
-					else -> musicServiceConnection.mediaBrowser.sendCustomAction(ACTION_SET_PLAYBACK_SPEED, bundleOf("playbackSpeed" to 1.5f), null)
-				}
-			}
-		} else {
-			musicServiceConnection.mediaBrowser.sendCustomAction(ACTION_SET_PLAYBACK_SPEED, bundleOf("playbackSpeed" to 1.0f), null)
+	fun togglePlaybackSpeed(newSpeed: Float?) {
+		if (newSpeed != null) {
+			musicServiceConnection.mediaBrowser.sendCustomAction(ACTION_SET_PLAYBACK_SPEED, bundleOf("playbackSpeed" to newSpeed), null)
 		}
 	}
 

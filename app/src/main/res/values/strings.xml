@@ -20,4 +20,8 @@
     <string name="loop_btn_description">Button to loop playlist, current song or stop looping</string>
     <string name="play_speed">%sx</string>
     <string name="default_play_speed">1x</string>
+    <string name="dialog_speed_title">Select Player Speed</string>
+    <string name="dialog_speed_name">Normal</string>
+    <string name="close_dialog">Cancel</string>
+    <string name="ok_dialog">OK</string>
 </resources>

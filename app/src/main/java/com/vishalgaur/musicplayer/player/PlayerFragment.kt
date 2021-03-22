@@ -54,7 +54,6 @@ class PlayerFragment : Fragment() {
 		Log.d(TAG, "onCreateView Starts")
 		binding = FragmentPlayerBinding.inflate(inflater)
 		binding.lifecycleOwner = this
-
 		Log.d(TAG, "onCreateView ends")
 		return binding.root
 	}
@@ -111,7 +110,7 @@ class PlayerFragment : Fragment() {
 		}
 
 		binding.playerSpeedTextView.setOnClickListener {
-			mainViewModel.togglePlaybackSpeed()
+			showSpeedDialog()
 		}
 
 		Log.d(TAG, "onViewCreated ends")
@@ -187,6 +186,11 @@ class PlayerFragment : Fragment() {
 			val formattedTime = getMinSec(it)
 			binding.totalTimeTextView.text = formattedTime
 		}
+	}
+
+	private fun showSpeedDialog() {
+		val speedSelectionDialogFragment = SpeedSelectionDialogFragment(playbackSpeed)
+		speedSelectionDialogFragment.show(childFragmentManager, SpeedSelectionDialogFragment.TAG)
 	}
 
 	private fun updatePlayerData(song: Song) {
